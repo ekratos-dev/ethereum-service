@@ -15,7 +15,6 @@ try {
 }
 
 // Merge the two configurations
-
 let mergeObjects = function (object1, object2) {
     for (let key of Object.keys(object2)) {
         if (object2[key] instanceof Object) {
@@ -27,6 +26,14 @@ let mergeObjects = function (object1, object2) {
     return object1;
 };
 let configuration = mergeObjects(baseConfiguration, dynamicConfiguration);
+
+// Include environment variables
+if (process.env.network_name) {
+    configuration.network_name = process.env.network_name;
+}
+if (process.env.network_host) {
+    configuration.web3_host = process.env.network_host;
+}
 
 // Configure RabbitMQ
 configuration.rabbitMQ={

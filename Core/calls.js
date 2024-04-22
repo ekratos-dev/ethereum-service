@@ -1,9 +1,8 @@
 var util = require("util");
 var Rabbus = require("rabbus");
-var Config = require('../config');
 var ActionsUtility = require('./ActionsUtility');
 
-module.exports = async function (Web3, Rabbot) {
+module.exports = async function (Config, Web3, Rabbot) {
     async function isBlockchainSynchronized() {
         try {
             const sync = await Web3.eth.isSyncing();

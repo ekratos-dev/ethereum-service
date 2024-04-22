@@ -4,27 +4,24 @@ FROM rabbitmq:3.13.1-management-alpine
 # Set the working directory inside the container
 WORKDIR /app
 
-# Install node and npm
-RUN apk add --update nodejs npm
+# Install node, npm and pm2
+RUN apk add --no-cache nodejs npm \
+    && npm install pm2 -g \
+    && npm cache clean --force
 
 # Install project dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm install --production
 
 # Copy application's code
 COPY . .
 
-# Install PM2 globally
-RUN npm install pm2 -g
-
-EXPOSE 5672
-EXPOSE 15672
-
 # Copy the startup script
 COPY start.sh start.sh
-
-# Make the script executable
 RUN chmod +x start.sh
+
+# Expose necessary ports
+EXPOSE 5672 15672
 
 # Run the script
 ENTRYPOINT ["./start.sh"]

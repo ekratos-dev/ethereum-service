@@ -47,6 +47,7 @@ getRabbot = async function (connection = null) {
 
 // Start the modules
 start = async function () {
+    console.log("Connecting to blockchain '" + Config.network_name + "' through host " + Config.web3_host)
     let web3 = new Web3(new Web3.providers.HttpProvider(Config.web3_host));
     let common = Common.custom({ chain: Config.network_name });
     /*if (Config.network_name === "mumbai") common = Common.custom(CustomChain.PolygonMumbai);
@@ -59,17 +60,17 @@ start = async function () {
     try {
         if (modules.validate) {
             let rabbot = await getRabbot(Config.validate.connection);
-            require('./Core/validate')(web3, rabbot);
+            require('./Core/validate')(Config, web3, rabbot);
         }
 
         if (modules.transactions) {
             let rabbot = await getRabbot(Config.transactions.connection);
-            require('./Core/transactions')(web3, common, rabbot);
+            require('./Core/transactions')(Config, web3, common, rabbot);
         }
 
         if (modules.calls) {
             let rabbot = await getRabbot(Config.calls.connection);
-            require('./Core/calls')(web3, rabbot);
+            require('./Core/calls')(Config, web3, rabbot);
         }
     } catch (e) {
         console.error("ERROR starting Ethereum Service");

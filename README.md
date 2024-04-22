@@ -43,9 +43,19 @@ A Dockerfile is provided to run this project in a container.
 Build the docker image with this command.
 
 ```
-docker build --no-cache -t ethereum-service .
+docker build --no-cache -t ekratos/ethereum-service:1.0 .
 ```
 
 Then start a container, and you can use its exposed port 5672 to connect to the Rabbit as a client, and 15672 to connect to the RabbitMQ management interface: http://localhost:15672
 
 The default user and password is "guest".
+
+# Configuration
+
+This service connects by default to Sepolia blockchain.
+
+You can use the environment parameters to connect to any other blockchain.
+- network_name
+- network_host
+
+Or, in local, you can also use customize the config.local.js file.

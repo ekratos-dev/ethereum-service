@@ -1,10 +1,9 @@
 const util = require("util");
 const Rabbus = require("rabbus");
-const Config = require('../config');
 const {ErrorWeb3} = require('ethereum-client-js');
 const ActionsUtility = require('./ActionsUtility');
 
-module.exports = function (Web3, Rabbot) {
+module.exports = function (Config, Web3, Rabbot) {
     // Web3 Timeout function
     let Web3TimeoutError = "TIMEOUT-ERROR";
     let TimeoutWeb3 = function (ms) {

@@ -1,6 +1,5 @@
 const util = require("util");
 const Rabbus = require("rabbus");
-const Config = require('../config');
 const ActionsUtility = require('./ActionsUtility');
 const { LegacyTransaction, FeeMarketEIP1559Transaction } = require('@ethereumjs/tx');
 const Transaction = require('ethereumjs-tx');
@@ -11,7 +10,7 @@ function sleep(ms) {
     })
 }
 
-module.exports = function (Web3, Common, Rabbot) {
+module.exports = function (Config, Web3, Common, Rabbot) {
     // Web3 Timeout function
     let Web3TimeoutError = "TIMEOUT-ERROR";
     let TimeoutWeb3 = function (ms) {
