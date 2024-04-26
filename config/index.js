@@ -34,6 +34,12 @@ if (process.env.network_name) {
 if (process.env.network_host) {
     configuration.web3_host = process.env.network_host;
 }
+if (process.env.rabbit_host) {
+    configuration.rabbit_connection.host = process.env.rabbit_host;
+}
+if (process.env.rabbit_port) {
+    configuration.rabbit_connection.port = process.env.rabbit_port;
+}
 
 // Configure RabbitMQ
 configuration.rabbitMQ={
