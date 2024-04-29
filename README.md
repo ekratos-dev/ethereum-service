@@ -58,4 +58,8 @@ You can use the environment parameters to connect to any other blockchain.
 - network_name
 - network_host
 
+Also configure the rabbit connection.
+- rabbit_host
+- rabbit_port
+
 Or, in local, you can also use customize the config.local.js file.

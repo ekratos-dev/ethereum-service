@@ -47,7 +47,7 @@ getRabbot = async function (connection = null) {
 
 // Start the modules
 start = async function () {
-    console.log("Connecting to blockchain '" + Config.network_name + "' through host " + Config.web3_host)
+    console.log("Connecting to blockchain '" + Config.network_name + "' through host " + Config.web3_host);
     let web3 = new Web3(new Web3.providers.HttpProvider(Config.web3_host));
     let common = Common.custom({ chain: Config.network_name });
     /*if (Config.network_name === "mumbai") common = Common.custom(CustomChain.PolygonMumbai);
@@ -56,6 +56,8 @@ start = async function () {
         common._chainParams.chainId = 80002;
         common._chainParams.networkId = 80002;
     }*/
+
+    console.log("Connecting to rabbit host '" + Config.rabbit_connection.host + ":" + Config.rabbit_connection.port);
 
     try {
         if (modules.validate) {

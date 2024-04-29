@@ -56,6 +56,17 @@ module.exports = function (Config, Web3, Common, Rabbot) {
         return new Promise((resolve, reject) => {
             Web3.eth.sendSignedTransaction(serializedTxHex, async function (error, hash) {
                 if (error) {
+                    if (error.receipt) {
+                        console.error('Transaction receipt:', error.receipt);
+                        try {
+                            const tx = await Web3.eth.getTransaction(error.receipt.transactionHash);
+                            const result = await Web3.eth.call(tx, tx.blockNumber);
+                            const reason = web3.utils.toAscii(result).replace(/\u0000/g, ''); // Decode the revert reason and remove null chars
+                            console.error('Revert reason (transaction): ' + reason);
+                        } catch (err) {
+                            console.error('Error fetching revert reason (transaction):', err);
+                        }
+                    }
                     reject(error);
                 }
                 resolve(hash);

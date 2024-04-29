@@ -41,6 +41,13 @@ module.exports = function (Config, Web3, Rabbot) {
 
         //When trxReceipt has a value, we can check the status, if is false it generates and error and remove it from the queue
         if (trxReceipt.blockNumber != null && (!trxReceipt.status || trxReceipt.gasUsed >= 6500000)) {
+            try {
+                const result = await Web3.eth.call(trxReceipt, trxReceipt.blockNumber);
+                const reason = Web3.utils.toAscii(result).replace(/\u0000/g, '');
+                console.log("Revert reason (validate): " + reason);
+            } catch (exc) {
+                console.error('Error fetching revert reason (validate):', exc);
+            }
             throw new ErrorWeb3("Invalid transaction", ErrorWeb3.TRANSACTION_ERROR);
         }
 
