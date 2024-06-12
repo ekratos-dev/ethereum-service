@@ -155,12 +155,13 @@ module.exports = function (Config, Web3, Common, Rabbot) {
                         return;
                     }
                     gasPrice = await Promise.race([TimeoutWeb3(1000), Web3.eth.getGasPrice()]);
+                    console.log('  Gas price: ' + gasPrice);
                     if (gasPrice === Web3TimeoutError) {
                         console.log('  Send transaction back to queue: ' + message.transactionId + ' (Timeout in gas price)');
                         actions.nack();
                         return;
                     }
-                }catch (e) {
+                } catch (e) {
                     console.error(e);
                     actions.reject();
                     return;
@@ -195,7 +196,9 @@ module.exports = function (Config, Web3, Common, Rabbot) {
                  * Send transaction
                  */
                 try {
+                    console.log('  Sending signed transaction with nonce ' + nonce);
                     let hash = await Promise.race([TimeoutWeb3(1000), sendSignedTransaction('0x' + hexString)]);
+                    console.log('  Received hash ' + hash);
 
                     if (hash === Web3TimeoutError) {
                         // Web3 Timeout
@@ -247,6 +250,7 @@ module.exports = function (Config, Web3, Common, Rabbot) {
                         const canRetry = error.message.indexOf("is not a contract address") < 0;
 
                         if (canRetry) {
+                            console.log(error);
                             console.log('  Send transaction back to queue: ' + message.transactionId + ' (' + error.message + ') with price: ' + message.value);
                             actions.nack();
                         } else {
