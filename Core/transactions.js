@@ -246,6 +246,16 @@ module.exports = function (Config, Web3, Common, Rabbot) {
                         console.error("Error in transaction (eip-155 error): " + error.message);
                         console.error(error);
                         actions.reject();
+                    } else if (typeof error.message !== "undefined" && error.message.indexOf("already known") !== -1) {
+                        // Transaction already known
+                        message.event = {name: 'error', params: {}};
+                        const actionSender = new ActionSender(message.project);
+                        actionSender.send(message, function () {
+                            console.log('  Send error action to project: ' + message.transactionId + ' Reject for ever');
+                        });
+                        console.error("Transaction already known " + error.message);
+                        console.error(error);
+                        actions.reject();
                     } else if(typeof error.message !== "undefined") {
                         const canRetry = error.message.indexOf("is not a contract address") < 0;
 

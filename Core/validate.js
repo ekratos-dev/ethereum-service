@@ -39,7 +39,7 @@ module.exports = function (Config, Web3, Rabbot) {
                 ErrorWeb3.TRANSACTION_PENDING_IN_QUEUE);
         }
 
-        //When trxReceipt has a value, we can check the status, if is false it generates and error and remove it from the queue
+        //When trxReceipt has a value, we can check the status, if is false it generates an error and remove it from the queue
         if (trxReceipt.blockNumber != null && (!trxReceipt.status || trxReceipt.gasUsed >= 6500000)) {
             try {
                 const result = await Web3.eth.call(trxReceipt, trxReceipt.blockNumber);
@@ -95,6 +95,7 @@ module.exports = function (Config, Web3, Rabbot) {
 
                 if (trxConfirmations === -1) {
                     // Timeout in web3 calls
+                    console.log('  Timeout in web3 calls');
                     resolve({
                         result: Web3TimeoutError,
                         logs: trxConfirmationResult.logs
@@ -172,6 +173,7 @@ module.exports = function (Config, Web3, Rabbot) {
                 .then(({result, logs}) => {
                     if (result && result === Web3TimeoutError) {
                         // Web3 Timeout, return to queue
+                        console.log('  Web3 Timeout, nack');
                         actions.nack();
                     } else {
                         // Transaction confirmed
@@ -194,7 +196,6 @@ module.exports = function (Config, Web3, Rabbot) {
                         });
 
                         // Reject forever
-                        console.error(error);
                         actions.reject();
                     } else if (typeof error.code !== "undefined" && error.code === ErrorWeb3.TRANSACTION_NOT_EXIST) {
                         if (new Date() - properties.timestamp < 5000) {
@@ -232,7 +233,6 @@ module.exports = function (Config, Web3, Rabbot) {
                     } else {
                         // Resend to the queue
                         console.log('  Send validate back to queue: ' + message.transactionId);
-                        console.error(error);
                         actions.nack();
                     }
                 });
