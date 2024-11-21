@@ -1,24 +1,39 @@
-# Use RabbitMQ image based on Alpine
-FROM rabbitmq:3.13.1-management-alpine
+# Stage 1: Build Stage
+FROM node:20.10.0-alpine3.19 AS build
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Install node, npm and pm2
-RUN apk add --no-cache nodejs npm \
-    && npm install pm2 -g \
+# Install build dependencies
+RUN apk add --no-cache python3 make g++
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install project dependencies (only production dependencies)
+RUN npm install --omit=dev \
     && npm cache clean --force
 
-# Install project dependencies
-COPY package*.json ./
-RUN npm install --production
-
-# Copy application's code
+# Copy the application's code
 COPY . .
 
-# Copy the startup script
-COPY start.sh start.sh
-RUN chmod +x start.sh
+# Stage 2: Runtime Stage
+FROM rabbitmq:3.13.1-management-alpine
+
+# Install Node.js, npm, and pm2
+RUN apk add --no-cache nodejs npm \
+    && npm install -g pm2 \
+    && npm cache clean --force \
+    && rm -rf /root/.npm /tmp/*
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the built application from the build stage
+COPY --from=build /app /app
+
+# Ensure start.sh is executable
+RUN chmod +x /app/start.sh
 
 # Expose necessary ports
 EXPOSE 5672 15672

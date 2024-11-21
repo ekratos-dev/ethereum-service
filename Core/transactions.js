@@ -176,7 +176,7 @@ module.exports = function (Config, Web3, Common, Rabbot) {
                     data: message.data
                 };
 
-                // Create a new legacy transaction
+                // Create a new transaction
                 let signedTx;
                 signedTx = new Transaction(txData);
                 signedTx.sign(Buffer.from(message.senderPrivateKey, 'hex'));
